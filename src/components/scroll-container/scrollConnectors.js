@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { throttleWithRAF } from '../../utils/throttle';
 import ScrollContext from './ScrollContext';
 import scrollerTypes from './scrollerTypes';

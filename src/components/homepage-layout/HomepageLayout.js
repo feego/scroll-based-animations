@@ -5,6 +5,7 @@ import { useMemo, useRef } from 'react';
 import useContentScrollProgress, { getGlobalScrollProgress } from '../useContentScrollProgress';
 import useMinWidthMediaQuery from '../../hooks/useMinWidthMediaQuery';
 import { Breakpoints } from '../../styles/contants';
+import LayerAnimatedContent from '../LayerAnimatedContent';
 
 const Styles = {
   wrapper: css`
@@ -42,17 +43,33 @@ const Styles = {
     z-index: -1;
     pointer-events: none;
   `,
-  logo: css`
+  logoWrapper: css`
     will-change: transform;
     position: sticky;
     top: 2rem;
     z-index: 1;
+  `,
+  logo: css`
     color: rgb(3, 74, 70);
     font-size: 5.5rem;
+    will-change: opacity;
 
     @media (min-width: ${Breakpoints.tabletPortrait}px) {
       font-size: 13rem;
     }
+  `,
+  invertedLogo: css`
+    position: absolute;
+    top: 0;
+    left: 0;
+    will-change: opacity;
+    color: #ffe5d2;
+  `,
+  title: css`
+    color: rgb(3, 74, 70);
+  `,
+  invertedTitle: css`
+    color: #ffe5d2;
   `,
   gridSection: css`
     will-change: transform;
@@ -158,6 +175,7 @@ const HomepageLayout = () => {
         }
       : { transform: `translateX(${-page3ProgressInPercentage}%)` };
   const globalScrollProgress = useMemo(() => getGlobalScrollProgress(contentScrollProgress), [contentScrollProgress]);
+  const secondSlideBackgroundOpacity = globalScrollProgress > 0.8 ? Math.min(1, (0.2 - (1 - globalScrollProgress)) / 0.2) : 0;
   const logoScalingFactor = Math.max(0.3, 1 - contentScrollProgress[0].progress);
   const windowHeight = useClosestScrollValues((state, scrollValues) => scrollValues.boundingRect.height);
   const page3HeightWithoutWindowHeight = contentScrollProgress[3].measurements.height - windowHeight;
@@ -169,19 +187,27 @@ const HomepageLayout = () => {
   return (
     <PageLayout wrapperCSS={Styles.wrapper}>
       <Background opacity={1} color="#bae9bb" />
-      <Background opacity={globalScrollProgress > 0.8 ? Math.min(1, (0.2 - (1 - globalScrollProgress)) / 0.2) : 0} color="#034a46" />
+      <Background opacity={secondSlideBackgroundOpacity} color="#034a46" />
       <Page wrapperCSS={Styles.firstPage} innerRef={pageRefs[0]}>
-        <h1
-          css={Styles.logo}
+        <LayerAnimatedContent
+          wrapperCSS={Styles.logoWrapper}
+          overlayOpacity={secondSlideBackgroundOpacity}
+          contentCSS={Styles.logo}
+          overlayCSS={[Styles.logo, Styles.invertedLogo]}
           style={{
             transform: `scale3d(${logoScalingFactor}, ${logoScalingFactor}, 1)`,
             position: logoScalingFactor === 0.3 ? 'absolute' : 'sticky',
           }}>
-          Logo
-        </h1>
+          {(props) => <h1 {...props}>Logo</h1>}
+        </LayerAnimatedContent>
       </Page>
       <Page innerRef={pageRefs[1]}>
-        <h2 css={Styles.title}>Title 2</h2>
+        <LayerAnimatedContent
+          overlayOpacity={secondSlideBackgroundOpacity}
+          contentCSS={Styles.title}
+          overlayCSS={[Styles.title, Styles.invertedTitle]}>
+          {(props) => <h2 {...props}>Title 2</h2>}
+        </LayerAnimatedContent>
       </Page>
       <Page innerRef={pageRefs[2]}>
         <div css={Styles.stickyHorizontalSections}>
