@@ -34,11 +34,13 @@ const Styles = {
     justify-content: stretch;
     align-items: stretch;
     overflow: hidden;
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
+    z-index: -1;
+    pointer-events: none;
   `,
   logo: css`
     will-change: transform;
@@ -102,6 +104,7 @@ const Styles = {
     height: 100%;
     will-change: opacity;
     z-index: 0;
+    pointer-events: none;
   `,
   pageBackground: css`
     position: absolute;
@@ -172,7 +175,7 @@ const HomepageLayout = () => {
           css={Styles.logo}
           style={{
             transform: `scale3d(${logoScalingFactor}, ${logoScalingFactor}, 1)`,
-            position: logoScalingFactor === 0.3 ? 'fixed' : 'sticky',
+            position: logoScalingFactor === 0.3 ? 'absolute' : 'sticky',
           }}>
           Logo
         </h1>

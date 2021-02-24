@@ -4,7 +4,7 @@ import Styles from './styles';
 
 const useScrollerController = ({
   lock,
-  className,
+  wrapperCSS,
   contentStyle,
   contentCSS,
   children,
@@ -122,7 +122,7 @@ const useScrollerController = ({
     disablePointerEvents,
     enablePointerEvents,
     children: (
-      <div ref={handleRef} css={[Styles.wrapper, lock && Styles.lockScroll]} {...remainingProps}>
+      <div ref={handleRef} css={[Styles.wrapper, wrapperCSS, lock && Styles.lockScroll]} {...remainingProps}>
         <div css={[Styles.content, contentCSS]} style={contentStyleValue}>
           {children}
         </div>

@@ -12,21 +12,21 @@ export const cancelAnimationTimeout = (frame) => cancelAnimationFrame(frame.id);
  * @returns {Object} Frame data.
  */
 export const requestAnimationTimeout = (callback, delay) => {
-    const start = Date.now();
+  const start = Date.now();
 
-    const timeout = () => {
-        const delta = Date.now() - start;
+  const timeout = () => {
+    const delta = Date.now() - start;
 
-        if (delta >= delay) {
-            callback.call();
-        } else {
-            frame.id = requestAnimationFrame(timeout);
-        }
-    };
+    if (delta >= delay) {
+      callback.call();
+    } else {
+      frame.id = requestAnimationFrame(timeout);
+    }
+  };
 
-    const frame = {
-        id: requestAnimationFrame(timeout),
-    };
+  const frame = {
+    id: requestAnimationFrame(timeout),
+  };
 
-    return frame;
+  return frame;
 };

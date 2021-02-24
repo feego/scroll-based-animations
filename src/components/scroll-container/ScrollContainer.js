@@ -5,21 +5,22 @@ import useScrollerController from './controllers/useScrollerController';
 import useBodyScrollerController from './controllers/useBodyScrollerController';
 import useNoPointerEventsWhileScrolling from './enhancers/useNoPointerEventsWhileScrolling';
 import useOnScrollEndHandler from './enhancers/useOnScrollEndHandler';
+import { compose, identity } from '../../utils/helpers';
 
-const ScrollContainer = ({ useBodyScroller, noPointerEventsWhileScrolling = false, onScroll = () => {}, ...propsForIOSHackery }) => {
+const ScrollContainer = ({ useBodyScroller, noPointerEventsWhileScrolling = false, onScroll = () => {}, ...baseProps }) => {
   const scrollContext = useContext(ScrollContext);
   const needsIOSHackery = useMemo(() => isIOSDevice() && !scrollContext.hasRootContainer, [scrollContext.hasRootContainer]);
-  const propsForScrollerController = needsIOSHackery ? useIOSHackery(propsForIOSHackery) : propsForIOSHackery;
-  const propsForNoPointerEventsWhileScrolling = useBodyScroller
-    ? useBodyScrollerController(propsForScrollerController)
-    : useScrollerController(propsForScrollerController);
-  const propsForWithOnScrollEndHandler = noPointerEventsWhileScrolling
-    ? useNoPointerEventsWhileScrolling(propsForNoPointerEventsWhileScrolling)
-    : propsForNoPointerEventsWhileScrolling;
-  const props =
-    propsForWithOnScrollEndHandler.onScrollEnd !== undefined
-      ? useOnScrollEndHandler(propsForWithOnScrollEndHandler)
-      : propsForWithOnScrollEndHandler;
+  const useEnhancers = useMemo(
+    () =>
+      compose(
+        needsIOSHackery ? useIOSHackery : identity,
+        useBodyScroller ? useBodyScrollerController : useScrollerController,
+        noPointerEventsWhileScrolling ? useNoPointerEventsWhileScrolling : identity,
+        (props) => (props.onScrollEnd !== undefined ? useOnScrollEndHandler(props) : props)
+      ),
+    []
+  );
+  const props = useEnhancers(baseProps);
   const [scrollerAPI, notifySubscribedListeners] = useScrollerAPI(props);
 
   /**

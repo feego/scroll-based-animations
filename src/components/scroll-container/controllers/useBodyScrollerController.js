@@ -42,7 +42,7 @@ export const getScrollPosition = () =>
  *
  * @returns {undefined} Undefined.
  */
-export const scroll = (...args) => window.scroll(...args);
+export const scrollTo = (...args) => window.scroll(...args);
 
 /**
  * Attaches a given scroll event handler to the current window.
@@ -80,7 +80,7 @@ export const enablePointerEvents = () => {
 
 export const useBodyScrollerController = (props) => ({
   ...props,
-  scroll,
+  scrollTo,
   getBoundingRect,
   getScrollPosition,
   detachScrollListener,

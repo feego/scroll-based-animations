@@ -1,4 +1,5 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { throttleWithRAF } from '../../utils/throttle';
 import ScrollContext from './ScrollContext';
 import scrollerTypes from './scrollerTypes';
 
@@ -34,7 +35,7 @@ export const defaultScrollStateReducer = (state, scrollState) => scrollState;
 const createUseScrollValues = (scrollerType) => {
   const useScrollerAPI = createUseScrollerAPI(scrollerType);
 
-  return (scrollStateReducer = defaultScrollStateReducer, scrollEventThrottler = (run) => run) => {
+  return (scrollStateReducer = defaultScrollStateReducer, scrollEventThrottler = throttleWithRAF) => {
     const listenerRef = useRef();
     const scrollerAPI = useScrollerAPI();
     const getScrollValues = useCallback(

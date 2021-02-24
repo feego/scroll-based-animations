@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React, { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 const Styles = {
   iOSScrollFix: css`
@@ -48,7 +48,7 @@ export const scrollElementIfOnLimit = (element) => {
  *
  * @returns {Object} Component wrapped props.
  */
-const useIOSHackery = ({ onTouchStart = () => {}, onTouchEnd = () => {}, onScrollEnd = () => {}, ...props }) => {
+const useIOSHackery = ({ onTouchStart = () => {}, onTouchEnd = () => {}, onScrollEnd = () => {}, innerRef = () => {}, ...props }) => {
   const containerRef = useRef(null);
   const didTouchEndRef = useRef(true);
 
@@ -75,9 +75,9 @@ const useIOSHackery = ({ onTouchStart = () => {}, onTouchEnd = () => {}, onScrol
   const handleRef = useCallback(
     (ref) => {
       containerRef.current = ref;
-      props.innerRef(ref);
+      innerRef(ref);
     },
-    [props.innerRef]
+    [innerRef]
   );
 
   /**
@@ -95,18 +95,18 @@ const useIOSHackery = ({ onTouchStart = () => {}, onTouchEnd = () => {}, onScrol
         didTouchEndRef.current = false;
       }
 
-      return props.onTouchStart(event);
+      return onTouchStart(event);
     },
-    [scrollIfOnLimit, props.onTouchStart]
+    [scrollIfOnLimit, onTouchStart]
   );
 
   const handleTouchEnd = useCallback(
     (event) => {
       didTouchEndRef.current = true;
 
-      return props.onTouchEnd(event);
+      return onTouchEnd(event);
     },
-    [props.onTouchEnd]
+    [onTouchEnd]
   );
 
   const handleScrollEnd = useCallback(
@@ -115,9 +115,9 @@ const useIOSHackery = ({ onTouchStart = () => {}, onTouchEnd = () => {}, onScrol
         scrollIfOnLimit();
       }
 
-      props.onScrollEnd(...args);
+      onScrollEnd(...args);
     },
-    [scrollIfOnLimit, props.onScrollEnd]
+    [scrollIfOnLimit, onScrollEnd]
   );
 
   useEffect(() => {

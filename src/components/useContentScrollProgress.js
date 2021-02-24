@@ -36,10 +36,12 @@ const useContentScrollProgress = (refs) => {
   return contentScrollProgress;
 };
 
-export const getGlobalScrollProgress = ([element, ...otherElements], progress = 0) =>
-  (element.progress >= 0 && element.progress <= 1) || otherElements.length === 0
+export const getGlobalScrollProgress = ([element, ...otherElements], progress = 0, firstElementProgress = element.progress) =>
+  element.progress >= 0 && element.progress <= 1
     ? progress + element.progress
-    : getGlobalScrollProgress(otherElements, progress + 1);
+    : otherElements.length === 0
+    ? firstElementProgress
+    : getGlobalScrollProgress(otherElements, progress + 1, firstElementProgress);
 
 export const useContentScrollBottomProgress = (contentScrollProgress) => {
   const windowHeight = useClosestScrollValues((state, scrollValues) => scrollValues.boundingRect.height);

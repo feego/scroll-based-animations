@@ -33,7 +33,7 @@ const App = ({ Component, pageProps, router }) => {
       <MediaContextProvider>
         <GlobalClicksHandler wrapperCSS={Styles.globalClicksHandler}>
           <ModalsController wrapperCSS={Styles.modalsController}>
-            <ScrollContainer useBodyScroller>
+            <ScrollContainer wrapperCSS={Styles.modalsController} contentCSS={Styles.modalsController}>
               <Component {...pageProps} />
             </ScrollContainer>
           </ModalsController>
