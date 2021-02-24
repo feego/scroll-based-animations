@@ -175,7 +175,7 @@ const HomepageLayout = () => {
         }
       : { transform: `translateX(${-page3ProgressInPercentage}%)` };
   const globalScrollProgress = useMemo(() => getGlobalScrollProgress(contentScrollProgress), [contentScrollProgress]);
-  const secondSlideBackgroundOpacity = globalScrollProgress > 0.8 ? Math.min(1, (0.2 - (1 - globalScrollProgress)) / 0.2) : 0;
+  const secondSlideBackgroundOpacity = globalScrollProgress > 0.6 ? Math.min(1, (0.2 - (1 - (globalScrollProgress + 0.2))) / 0.2) : 0;
   const logoScalingFactor = Math.max(0.3, 1 - contentScrollProgress[0].progress);
   const windowHeight = useClosestScrollValues((state, scrollValues) => scrollValues.boundingRect.height);
   const page3HeightWithoutWindowHeight = contentScrollProgress[3].measurements.height - windowHeight;
